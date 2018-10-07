@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:tx="http://www.springframework.org/schema/tx" xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd"> 
+
+	<!-- 配置c3p0连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/company"></property>
+		<property name="user" value="root"></property>
+		<property name="password" value="1234"></property>
+	</bean>
+	<!-- 1、配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 向里面注入datasource -->
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!--2、开启事务管理器注解-->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!--3、在执行事务方法的类上添加@Transactional  -->
+
+	
+	<!-- 创建service-->
+	<bean id="accountService" class="cn.scut.transactionbyanno.AccountService">
+		<!--通过注解注入dao  -->
+		
+	</bean>
+	<!-- 创建dao -->
+	<bean id="accountDao" class="cn.scut.transactionbyanno.AccountDao">
+		<!--通过注解注入jdbcTemplate  -->
+	</bean>
+	<!-- 创建jdbcTemplate-->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	<!-- 开启注解扫描  -->
+	<context:component-scan base-package="cn"></context:component-scan>
+</beans>
